@@ -2,27 +2,27 @@
   <v-container>
     <v-form ref="form" class="form-center">
       <v-row>
-        <v-col 
+        <v-col
           md="6"
           sm="12"
           xs="12"
         >
-          <v-img 
+          <v-img
             class="margin-auto"
-            lazy-src="@/assets/logo.png"
-            max-width="100"
-            src="../assets/logo.png"
+            lazy-src="@/assets/logo.svg"
+            max-width="200"
+            src="../assets/logo.svg"
           />
         </v-col>
       </v-row>
-      
+
       <v-row>
-        <v-col 
+        <v-col
           md="6 "
           sm="12"
           xs="12"
         >
-          <v-text-field 
+          <v-text-field
             v-model="formValues.email"
             label="Email"
             :rules="emailRules"
@@ -35,10 +35,10 @@
       <v-row>
         <v-col
           md="6"
-          sm="12" 
+          sm="12"
           xs="12"
         >
-          <v-text-field 
+          <v-text-field
             v-model="formValues.password"
             label="Mot de passe"
             :rules="passwordRules"
@@ -63,7 +63,7 @@
       </v-row>
       <v-row>
         <v-col md="6" sm="12" xs="12">
-          <v-btn 
+          <v-btn
           class="form-btn"
           color="#375D81"
           :to="{name: 'Register'}">Inscription</v-btn>
