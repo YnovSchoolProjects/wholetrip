@@ -5,7 +5,7 @@
 				<v-col>
 					<v-data-table
 					:headers="headers"
-					:items="desserts"
+					:items="projets"
 					sort-by="calories"
 					class="elevation-1"
 				>
@@ -32,89 +32,15 @@
 										v-bind="attrs"
 										v-on="on"
 									>
-										New Item
+										Nouveau projet
 									</v-btn>
 								</template>
-								<v-card>
-									<v-card-title>
-										<span class="headline">{{ formTitle }}</span>
-									</v-card-title>
-
-									<v-card-text>
-										<v-container>
-											<v-row>
-												<v-col
-													cols="12"
-													sm="6"
-													md="4"
-												>
-													<v-text-field
-														v-model="editedItem.name"
-														label="Nom"
-													></v-text-field>
-												</v-col>
-												<v-col
-													cols="12"
-													sm="6"
-													md="4"
-												>
-													<v-text-field
-														v-model="editedItem.dateDebut"
-														label="Date de début"
-													></v-text-field>
-												</v-col>
-												<v-col
-													cols="12"
-													sm="6"
-													md="4"
-												>
-													<v-text-field
-														v-model="editedItem.debutFin"
-														label="Date de fin"
-													></v-text-field>
-												</v-col>
-												<v-col
-													cols="12"
-													sm="6"
-													md="4"
-												>
-													<v-text-field
-														v-model="editedItem.etat"
-														label="Etat"
-													></v-text-field>
-												</v-col>
-												<v-col
-													cols="12"
-													sm="6"
-													md="4"
-												>
-													<v-text-field
-														v-model="editedItem.token"
-														label="Token"
-													></v-text-field>
-												</v-col>
-											</v-row>
-										</v-container>
-									</v-card-text>
-
-									<v-card-actions>
-										<v-spacer></v-spacer>
-										<v-btn
-											color="blue darken-1"
-											text
-											@click="close"
-										>
-											Annuler
-										</v-btn>
-										<v-btn
-											color="blue darken-1"
-											text
-											@click="save"
-										>
-											Sauvegarder
-										</v-btn>
-									</v-card-actions>
-								</v-card>
+								<projet-form
+									@save="save"
+									@close="close"
+									:projet="editedItem"
+									:edit="editForm"
+								/>
 							</v-dialog>
 							<v-dialog v-model="dialogDelete" max-width="500px">
 								<v-card>
@@ -160,9 +86,13 @@
 </template>
 
 <script>
+import ProjetForm from '../components/projetForm.vue';
+
 export default {
   name: "Dashboard",
+	components: {ProjetForm},
   data: () => {
+ProjetForm
     return {
 			dialog: false,
       dialogDelete: false,
@@ -175,7 +105,7 @@ export default {
 				{ text: 'Token', value: 'token' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
-      desserts: [],
+      projets: [],
       editedIndex: -1,
       editedItem: {
         name: '',
@@ -184,6 +114,7 @@ export default {
         etat: '',
         token: '',
       },
+			editForm: false,
       defaultItem: {
         name: '',
         dateDebut: '',
@@ -196,7 +127,7 @@ export default {
 
 	computed: {
 		formTitle () {
-			return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+			return this.editedIndex === -1 ? 'Nouveau projet' : 'Modifier un projet'
 		},
 	},
 
@@ -214,59 +145,61 @@ export default {
 	},
 
 	methods: {
-      initialize () {
-        this.desserts = [
-          {
-            name: 'Voyage en italie',
-						dateDebut: '29/10/2020',
-						dateFin: '29/11/2020',
-						etat: 'Protégé',
-						token: 'sfkjklf34sdqo23',
-          },
-        ]
-      },
+		initialize () {
+			this.projets = [
+				{
+					name: 'Voyage en italie',
+					dateDebut: '29/10/2020',
+					dateFin: '29/11/2020',
+					etat: 'PROTEGE',
+					token: 'sfkjklf34sdqo23',
+				},
+			]
+		},
 
-      editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
+		save (projet) {
+			if (this.editForm) {
+				Object.assign(this.projets[this.editedIndex], projet)
+				this.editForm = false;
+			} else {
+				this.projets.push(projet)
+			}
+			this.close()
+		},
 
-      deleteItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialogDelete = true
-      },
+		editItem (item) {
+			this.editedIndex = this.projets.indexOf(item)
+			this.editedItem = Object.assign({}, item)
+			this.dialog = true
+			this.editForm = true
+		},
 
-      deleteItemConfirm () {
-        this.desserts.splice(this.editedIndex, 1)
-        this.closeDelete()
-      },
+		deleteItem (item) {
+			this.editedIndex = this.projets.indexOf(item)
+			this.editedItem = Object.assign({}, item)
+			this.dialogDelete = true
+		},
 
-      close () {
-        this.dialog = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
+		deleteItemConfirm () {
+			this.projets.splice(this.editedIndex, 1)
+			this.closeDelete()
+		},
 
-      closeDelete () {
-        this.dialogDelete = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
+		close () {
+			this.dialog = false
+			this.$nextTick(() => {
+				this.editedItem = Object.assign({}, this.defaultItem)
+				this.editedIndex = -1
+			})
+		},
 
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
-        } else {
-          this.desserts.push(this.editedItem)
-        }
-        this.close()
-      },
+		closeDelete () {
+			this.dialogDelete = false
+			this.$nextTick(() => {
+				this.editedItem = Object.assign({}, this.defaultItem)
+				this.editedIndex = -1
+			})
+		},
 	}
 };
 </script>
