@@ -33,38 +33,6 @@
         </v-row>
         <v-row>
           <v-col
-            md="6 "
-            sm="12"
-            xs="12"
-          >
-            <v-text-field 
-              v-model="formValues.familyName"
-              label="Nom de la famille"
-              :rules="nameRules"
-              required
-              outline
-              dense
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            md="6 "
-            sm="12"
-            xs="12"
-          >
-            <v-text-field 
-              v-model="formValues.username"
-              label="Nom"
-              :rules="nameRules"
-              required
-              outline
-              dense
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
             md="6"
             sm="12" 
             xs="12"
@@ -123,10 +91,6 @@ export default {
           v => !!v || 'La répétition du mot de passe est requis.',
           v => v === this.formValues.password || 'Les deux mot de passe doivent être identique.'
         ],
-        nameRules: [
-          v => !!v || 'Le nom est requis.',
-          v => v.length > 1 || 'Le nom de famille est trop court.'
-        ],
         formValues: this.initEmptyForm(),
         loadingForm: false
       };
@@ -156,8 +120,6 @@ export default {
     initEmptyForm () {
       return {
         email: '',
-        username: '',
-        familyName: '',
         password: '',
         verifyPassword: ''
       }

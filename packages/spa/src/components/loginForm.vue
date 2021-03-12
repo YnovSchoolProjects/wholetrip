@@ -34,22 +34,6 @@
       </v-row>
       <v-row>
         <v-col
-          md="6 "
-          sm="12"
-          xs="12"
-        >
-          <v-text-field 
-            v-model="formValues.username"
-            label="Nom"
-            :rules="nameRules"
-            required
-            outline
-            dense
-          />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col
           md="6"
           sm="12" 
           xs="12"
@@ -103,9 +87,6 @@ export default {
       passwordRules: [
         v => !!v || 'Le mot de passe est requis.'
       ],
-      nameRules: [
-        v => !!v || 'Le nom est requis.'
-      ],
       formValues: this.initEmptyForm(),
       loadingForm: false
     }
@@ -135,7 +116,6 @@ export default {
     initEmptyForm () {
       return {
         email: '',
-        username: '',
         password: '',
       }
     }
