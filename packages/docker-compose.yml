@@ -1,0 +1,43 @@
+version: "3"
+services:
+  php:
+    container_name: wholetrip_php
+    hostname: wholetrip_php
+    build: api/build/php
+    environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=25551
+    expose:
+      - "9000"
+    depends_on:
+      - db
+    volumes:
+      - ./api:/var/www/html/symfony
+
+  nginx:
+    container_name: wholetrip_api
+    hostname: wholetrip_api
+    build: api/build/nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - php
+      - db
+    volumes:
+      - ./api/public:/var/www/html/symfony/public
+
+  db:
+    container_name: wholetrip_db
+    hostname: wholetrip_db
+    image: mysql:latest
+    cap_add:
+      - SYS_NICE
+    environment:
+      MYSQL_DATABASE: wholetrip
+      MYSQL_ROOT_PASSWORD: wholetrip
+    ports:
+      - "3306:3306"
+    volumes:
+      - wholetrip_data:/var/lib/mysql
+
+volumes:
+  wholetrip_data:
