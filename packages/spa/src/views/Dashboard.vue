@@ -1,5 +1,4 @@
 <template>
-  <div class="dashboard">
     <v-container class="center-menu">
       <v-row>
         <v-col>
@@ -100,7 +99,6 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
 </template>
 
 <script>

@@ -16,6 +16,12 @@
                 filled
                 prepend-icon="mdi-camera"
             ></v-file-input>
+          <v-btn
+              color="primary"
+              dark
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
         </v-col>
         </v-row>
     </v-container>
