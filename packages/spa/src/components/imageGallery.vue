@@ -13,14 +13,14 @@
         class="grey lighten-2"
         @click='getZoom(image)'
         >
-                
+
         </v-img>
     </v-col>
       <template>
         <v-row justify="center">
         <v-dialog
             v-model="dialog"
-            max-width="500"
+            max-width="1000"
         >
       <v-card>
           <v-img
@@ -28,7 +28,7 @@
             :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
             class="grey lighten-2"
           >
-                
+
         </v-img>
       </v-card>
     </v-dialog>
@@ -36,7 +36,7 @@
       </template>
     </v-row>
 </template>
-   
+
 
 
 
@@ -47,7 +47,7 @@
         return {
             dialog: false,
             currentSrc:null,
-            images: 
+            images:
             [
                 "https://i.pinimg.com/originals/08/2f/67/082f678d7336fd479c3cc70f2d88dab9.jpg",
                 "https://i.pinimg.com/736x/57/49/86/574986d423b07a7d77f253af0d68a3c2.jpg",
@@ -69,7 +69,7 @@
                 "https://milesandlove.com/system/attachments/2256/xxlarge/arena-de-verone.jpg?1509450868",
                 "http://www.italia.it/uploads/RTEmagicC_Verona_panoramica_03.jpg.jpg",
                 "https://media.boalingua.ch/images/_italien_verona_header_1.jpg"
-            ]            
+            ]
         }
     },
     methods:{

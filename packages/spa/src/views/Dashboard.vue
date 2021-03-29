@@ -22,7 +22,7 @@
                       v-bind="attrs"
                       v-on="on"
                     >
-                      Nouveau projet
+                      <v-icon>mdi-earth-plus</v-icon>
                     </v-btn>
                   </template>
                   <projet-form
