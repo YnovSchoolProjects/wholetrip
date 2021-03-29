@@ -27,6 +27,9 @@ const routes = [
     path: '/gallery',
     name: 'Gallery',
     component: () => import('../views/Gallery.vue'),
+    meta: {
+      requireLogin: true
+    }
   },
 ]
 
