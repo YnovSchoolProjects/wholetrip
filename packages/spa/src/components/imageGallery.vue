@@ -25,7 +25,7 @@
       <v-card>
           <v-img
             :src='currentSrc'
-            :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+            :lazy-src="`https://picsum.photos/10/6?image=${1 * 5 + 10}`"
             class="grey lighten-2"
           >
                 
