@@ -30,3 +30,6 @@ EXPOSE 9000
 FROM php_default AS php_dev
 RUN pecl install -f xdebug-2.9.8 \
   && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)\nxdebug.remote_enable=1\nxdebug.remote_autostart=1" > /usr/local/etc/php/conf.d/xdebug.ini;
+
+FROM php_default as production
+COPY ../../ ./
