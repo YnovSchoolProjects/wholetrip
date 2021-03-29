@@ -5,6 +5,7 @@ import vuetify from './plugins/vuetify';
 import store from '@/store'
 import Axios from 'axios'
 
+
 Vue.config.productionTip = false
 
 Vue.use(
@@ -12,8 +13,9 @@ Vue.use(
     install (Vue) {
       Vue.prototype.$axios = Axios.create()
     }
-  }
-)
+  }, 
+), 
+
 
 new Vue({
   router,

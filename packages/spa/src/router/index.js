@@ -23,6 +23,11 @@ const routes = [
       requireLogin: true
     }
   },
+  {
+    path: '/gallery',
+    name: 'Gallery',
+    component: () => import('../views/Gallery.vue'),
+  },
 ]
 
 const router = new VueRouter({
