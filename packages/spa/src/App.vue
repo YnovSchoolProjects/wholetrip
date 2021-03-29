@@ -1,12 +1,24 @@
 <template>
   <v-app>
-    <v-card class="overflow-hidden height">
-      <v-app-bar
-        color="#375d81"
-        dark
-        elevate-on-scroll
-        scroll-target="#scrolling-techniques"
-      >
+    <v-card
+        flat
+        tile
+        elevation="0"
+    >
+      <v-toolbar elevation="0">
+        <v-toolbar-title>
+
+        </v-toolbar-title>
+        <v-img
+            max-width="200"
+            src="./assets/logo.svg"
+        />
+        <v-spacer></v-spacer>
+        <v-btn icon>
+          <v-icon>mdi-login</v-icon>
+        </v-btn>
+
+        <!--Todo make it works plz-->
         <v-btn v-if="!['Dashboard', 'Home'].some((routeName) => $router.currentRoute.name === routeName)" :to="getPrevRoute()" icon>
           <v-icon>mdi-chevron-left</v-icon>
         </v-btn>
@@ -17,43 +29,21 @@
         <v-btn v-if="getAuthenticated()" to="/dashboard" icon>
           <v-icon>mdi-home</v-icon>
         </v-btn>
-      </v-app-bar>
-      <v-sheet
-        id="scrolling-techniques"
-        class="overflow-y-auto"
-      >
-        <v-container class="container">
-          <router-view/>
-        </v-container>
-      </v-sheet>
+
+      </v-toolbar>
     </v-card>
-    <v-toolbar
-      v-if="!getExcludedActionRoute().some(route => route === $router.currentRoute.name) && getAuthenticated()"
-      absolute
-      bottom
-      width="100vw"
-      color="#375d81"
-      class="d-flex toolbar justify-center"
-    >
-      <v-btn 
-        v-if="!getExcludedActionRoute().some(route => route === $router.currentRoute.name)"
-        :elevation="10"
-        class="mb-15 plus-btn"
-        icon
-        :to="getActionAdd()"
-      >
-        <v-icon color="#375D81">mdi-plus</v-icon>
-      </v-btn>
-    </v-toolbar>
+    <v-container class="container--fluid fill-height grey lighten-5">
+      <router-view/>
+    </v-container>
     <v-snackbar
-      v-model="$store.state.control.showPopup"
-      :timeout="2500"
-      absolute
-      top
-      right
-      rounded="pill"
-      :color="$store.state.control.popup.color"
-      elevation-19
+        v-model="$store.state.control.showPopup"
+        :timeout="2500"
+        absolute
+        top
+        right
+        rounded="pill"
+        :color="$store.state.control.popup.color"
+        elevation-19
     >
       {{ $store.state.control.popup.text }}
     </v-snackbar>

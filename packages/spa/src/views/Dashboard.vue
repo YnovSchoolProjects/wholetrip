@@ -1,5 +1,4 @@
 <template>
-  <div class="dashboard">
     <v-container class="center-menu">
 			<v-row>
 				<v-col>
@@ -32,7 +31,7 @@
 										v-bind="attrs"
 										v-on="on"
 									>
-										Nouveau projet
+                    <v-icon>mdi-earth-plus</v-icon>
 									</v-btn>
 								</template>
 								<projet-form
@@ -47,8 +46,8 @@
 									<v-card-title class="headline">Etes vous sûr de vouloir supprimer ce projet ?</v-card-title>
 									<v-card-actions>
 										<v-spacer></v-spacer>
-										<v-btn color="blue darken-1" text @click="closeDelete">Annuler</v-btn>
-										<v-btn color="blue darken-1" text @click="deleteItemConfirm">Valider</v-btn>
+										<v-btn color="primary" text @click="closeDelete">Annuler</v-btn>
+										<v-btn color="primary" text @click="deleteItemConfirm">Valider</v-btn>
 										<v-spacer></v-spacer>
 									</v-card-actions>
 								</v-card>
@@ -89,7 +88,6 @@
 				</v-col>
 			</v-row>
 		</v-container>
-	</div>
 </template>
 
 <script>
