@@ -9,6 +9,7 @@ use App\Service\UserRegistred\TokenGenerationService;
 use App\Service\UserRegistred\UserRegistredMailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class UserDataPersister implements ContextAwareDataPersisterInterface
 {
@@ -17,14 +18,19 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
     private MailerInterface $mailer;
     private UserRegistredMailer $userRegistredMailer;
     private EntityManagerInterface $entityManager;
+    /**
+     * @var UserPasswordEncoderInterface
+     */
+    private UserPasswordEncoderInterface $encoder;
 
-    public function __construct(ContextAwareDataPersisterInterface $decorated, TokenGenerationService $tokenGenerationService, MailerInterface $mailer, UserRegistredMailer $userRegistredMailer, EntityManagerInterface $entityManager)
+    public function __construct(ContextAwareDataPersisterInterface $decorated, TokenGenerationService $tokenGenerationService, MailerInterface $mailer, UserRegistredMailer $userRegistredMailer, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder)
     {
         $this->decorated = $decorated;
         $this->tokenGenerationService = $tokenGenerationService;
         $this->mailer = $mailer;
         $this->userRegistredMailer = $userRegistredMailer;
         $this->entityManager = $entityManager;
+        $this->encoder = $encoder;
     }
 
     public function supports($data, array $context = []): bool
@@ -34,14 +40,13 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
+        if ($data instanceof User) {
+            $data->setPassword($this->encoder->encodePassword($data, $data->getPassword()));
+        }
+
         $this->decorated->persist($data, $context);
 
-        if (
-            $data instanceof User && (
-                ($context['collection_operation_name'] ?? null) === 'post' ||
-                ($context['graphql_operation_name'] ?? null) === 'create'
-            )
-        ) {
+        if ($data instanceof User) {
             $this->generateToken($data);
             $this->sendRegistrationEmail($data);
 
