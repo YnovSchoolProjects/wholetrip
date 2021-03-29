@@ -23,6 +23,21 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
+    App\Controller\ValidateUserRegistrationAction:
+        arguments:
+            $redirectUrl: '%env(REGISTRATION_REDIRECT_URL)%'
+
+    App\Service\UserRegistred\UserRegistredMailer:
+        arguments:
+            $applicationFromAddress: '%env(FROM_EMAIL)%'
+
+    App\Service\UserRegistred\AccountValidationUrlBuilder:
+        arguments:
+            $activationBaseUrl: 'https://wholetrip.guillaume-marmorat.com/api/user_validation'
+
+    App\DataPersister\UserDataPersister:
+        decorates: 'api_platform.doctrine.orm.data_persister'
+
     Aws\S3\S3Client:
         arguments:
             - version: 'latest'
