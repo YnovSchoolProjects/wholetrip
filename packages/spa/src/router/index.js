@@ -24,7 +24,7 @@ const routes = [
     }
   },
   {
-    path: '/gallery',
+    path: '/projet/:id/gallery',
     name: 'Gallery',
     component: () => import('../views/Gallery.vue'),
     meta: {
