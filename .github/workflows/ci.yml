@@ -29,6 +29,9 @@ jobs:
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-modules-
+
       - run: yarn --frozen-lockfile
+        working-directory: packages/spa
 
       - run: yarn lint
+        working-directory: packages/spa

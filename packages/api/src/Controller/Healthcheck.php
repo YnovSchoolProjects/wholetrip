@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class Healthcheck extends AbstractController
 {
     /**
-     * @Route("/healthcheck", name="api_healthcheck")
+     * @Route("/api/healthcheck", name="api_healthcheck")
      */
     public function index(): Response
     {

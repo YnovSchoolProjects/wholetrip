@@ -1,0 +1,57 @@
+# RedirectScheme
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  namespace: wholetrip
+  name: wholetrip-ingressroute-webredirect
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`wholetrip.guillaume-marmorat.com`) && PathPrefix(`/api`)
+      kind: Rule
+      services:
+        - name: wholetrip-api-svc
+          port: 80
+      middlewares:
+        - name: traefik-middleware-redirectscheme
+          namespace: traefik-system
+    - match: Host(`wholetrip.guillaume-marmorat.com`)
+      kind: Rule
+      services:
+        - name: wholetrip-spa-svc
+          port: 80
+      middlewares:
+        - name: traefik-middleware-redirectscheme
+          namespace: traefik-system
+
+# Real IngressRoute
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  namespace: wholetrip
+  name: wholetrip-ingressroute
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`wholetrip.guillaume-marmorat.com`) && PathPrefix(`/api`)
+      kind: Rule
+      services:
+        - name: wholetrip-api-svc
+          port: 80
+      middlewares:
+        - name: traefik-middleware-compress
+          namespace: traefik-system
+    - match: Host(`wholetrip.guillaume-marmorat.com`)
+      kind: Rule
+      services:
+        - name: wholetrip-spa-svc
+          port: 80
+      middlewares:
+        - name: traefik-middleware-compress
+          namespace: traefik-system
+  tls:
+    secretName: wholetrip-cert
