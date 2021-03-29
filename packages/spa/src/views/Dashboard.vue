@@ -62,7 +62,7 @@
               <v-icon small class="mr-2" @click="deleteItem(item)">
                 mdi-delete
               </v-icon>
-              <v-icon small :to="{ name: 'Gallery', params: { id: item.id } }">
+              <v-icon small @click="$router.push({ name: 'Gallery', params: { id: item.id } })">
                 mdi-arrow-right-bold-circle
               </v-icon>
             </template>
