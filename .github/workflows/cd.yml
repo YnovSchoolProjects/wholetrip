@@ -1,0 +1,70 @@
+name: wholetrip - cd
+
+on:
+  workflow_run:
+    workflows: ["wholetrip - ci"]
+    branches: [master]
+    types:
+      - completed
+
+jobs:
+  build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    strategy:
+      matrix:
+        directory: [ api, spa ]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: marceloprado/has-changed-path@v1
+        id: has-changes
+        with:
+          paths: ${{ matrix.directory }}
+
+      - name: setup Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        if: steps.has-changes.outputs.changed == 'true'
+
+      - name: login to Github Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
+        if: steps.has-changes.outputs.changed == 'true'
+
+      - name: build and push image
+        uses: docker/build-push-action@v2
+        with:
+          context: packages/${{ matrix.directory }}
+          file: packages/${{ matrix.directory }}/Dockerfile
+          push: true
+          tags: ghcr.io/marmorag/wholetrip-${{ matrix.directory }}:latest
+        if: steps.has-changes.outputs.changed == 'true'
+
+      - name: bump version and push tag
+        uses: mathieudutour/github-tag-action@v4.6
+        id: github_tag
+        with:
+          github_token: ${{ secrets.GHCR_TOKEN }}
+        if: steps.has-changes.outputs.changed == 'true'
+
+      - name: install kubectl
+        uses: azure/setup-kubectl@v1
+        if: steps.has-changes.outputs.changed == 'true'
+
+      - name: write kubeconfig
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: /tmp/kubeconfig
+          contents: ${{ secrets.K8S_CONFIG }}
+          write-mode: overwrite
+        if: steps.has-changes.outputs.changed == 'true'
+
+      - name: rollout deployments
+        run: kubectl -n wholetrip rollout restart deployments wholetrip-${{ matrix.directory }}-dp --kubeconfig="/tmp/kubeconfig"
+        if: steps.has-changes.outputs.changed == 'true'

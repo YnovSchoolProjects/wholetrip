@@ -1,0 +1,37 @@
+name: wholetrip - ci
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+env:
+  CI: true
+  TZ: Europe/Paris
+  NODE_VERSION: 14.x
+
+jobs:
+  lint_js:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - uses: actions/checkout@v2
+
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        with:
+          path: ${{ github.workspace }}/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      - run: yarn --frozen-lockfile
+        working-directory: packages/spa
+
+      - run: yarn lint
+        working-directory: packages/spa

@@ -1,0 +1,185 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wholetrip
+  name: wholetrip-api-dp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wholetrip-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: wholetrip-api
+    spec:
+      containers:
+        - name: wholetrip-api
+          image: ghcr.io/marmorag/wholetrip-api:latest
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          ports:
+            - containerPort: 3000
+              name: http
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              port: 80
+              path: /api/healthcheck
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+      imagePullSecrets:
+        - name: ghcr-private
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: wholetrip
+  name: wholetrip-api-svc
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  selector:
+    app: wholetrip-api
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wholetrip
+  name: wholetrip-spa-dp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wholetrip-spa
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: wholetrip-spa
+    spec:
+      containers:
+        - name: wholetrip-spa
+          imagePullPolicy: Always
+          image: ghcr.io/marmorag/kubernetes-wholetrip-spa:latest
+          resources:
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 80
+              name: http
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              port: 80
+              path: /
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+
+      imagePullSecrets:
+        - name: ghcr-private
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: wholetrip
+  name: wholetrip-spa-svc
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  selector:
+    app: wholetrip-spa
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wholetrip
+  name: wholetrip-database-dp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wholetrip-database
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: wholetrip-database
+    spec:
+      containers:
+      - name: wholetrip-database
+        image: mysql:latest
+        env:
+          - name: MYSQL_DATABASE
+            value: wholetrip
+          - name: MYSQL_ROOT_PASSWORD
+            value: wholetrip
+        ports:
+          - containerPort: 3306
+            name: mysql
+        resources:
+          limits:
+            cpu: 300m
+            memory: 256Mi
+        volumeMounts:
+        - name: wholetrip-database-volume
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: wholetrip-database-volume
+        persistentVolumeClaim:
+          claimName: wholetrip-database-pvc
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: wholetrip
+  name: wholetrip-database-svc
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+      name: mysql
+  selector:
+    app: wholetrip-database
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: wholetrip
+  name: wholetrip-database-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+  storageClassName: scw-bssd

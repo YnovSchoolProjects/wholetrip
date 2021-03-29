@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  namespace: wholetrip
+  name: wholetrip-cert
+spec:
+  commonName: wholetrip.guillaume-marmorat.com
+  secretName: wholetrip-cert
+  dnsNames:
+    - wholetrip.guillaume-marmorat.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

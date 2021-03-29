@@ -2,14 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Enum\VoyageStatus;
 use App\Repository\VoyageRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=VoyageRepository::class)
+ * @ApiResource()
  */
 class Voyage
 {
@@ -18,6 +21,7 @@ class Voyage
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @Groups({"read"})
      */
     private UuidInterface $id;
 

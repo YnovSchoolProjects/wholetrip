@@ -2,53 +2,66 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ApiResource(
+ *     normalizationContext={"groups"={"read"}},
+ *     denormalizationContext={"groups"={"write"}}
+ * )
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @Groups({"read"})
      */
     private UuidInterface $id;
 
     /**
      * @ORM\Column(type="string")
+     * @Groups({"read", "write"})
      */
     private string $username;
 
     /**
      * @ORM\Column(type="string", unique=true)
+     * @Groups({"read", "write"})
      */
     private string $email;
 
     /**
      * @ORM\Column(type="string")
+     * @Groups({"read", "write"})
      */
     private string $password;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private string $activationToken;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"read"})
      */
     private bool $active = false;
 
     /**
      * @ORM\OneToMany(targetEntity=Voyage::class, mappedBy="user", orphanRemoval=true)
+     * @Groups({"read", "write"})
      */
     private $voyages;
 
@@ -141,4 +154,16 @@ class User
 
         return $this;
     }
+
+    public function getRoles()
+    {
+        return ["ROLE_USER"];
+    }
+
+    public function getSalt()
+    {
+        return "";
+    }
+
+    public function eraseCredentials() {}
 }
