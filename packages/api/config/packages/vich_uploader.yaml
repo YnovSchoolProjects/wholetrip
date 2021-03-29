@@ -6,7 +6,7 @@ vich_uploader:
 
     mappings:
         media:
-            uri_prefix:
+            uri_prefix: "media"
             upload_destination: uploads.storage
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
             delete_on_remove: true
