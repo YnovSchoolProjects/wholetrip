@@ -1,213 +1,224 @@
 <template>
   <div class="dashboard">
     <v-container class="center-menu">
-			<v-row>
-				<v-col>
-					<v-data-table
-					:headers="headers"
-					:items="projets"
-					sort-by="calories"
-					class="elevation-1"
-				>
-					<template v-slot:top>
-						<v-toolbar
-							flat
-						>
-							<v-toolbar-title>Mes projets de voyage</v-toolbar-title>
-							<v-divider
-								class="mx-4"
-								inset
-								vertical
-							></v-divider>
-							<v-spacer></v-spacer>
-							<v-dialog
-								v-model="dialog"
-								max-width="500px"
-							>
-								<template v-slot:activator="{ on, attrs }">
-									<v-btn
-										color="primary"
-										dark
-										class="mb-2"
-										v-bind="attrs"
-										v-on="on"
-									>
-										Nouveau projet
-									</v-btn>
-								</template>
-								<projet-form
-									@save="save"
-									@close="close"
-									:projet="editedItem"
-									:edit="editForm"
-								/>
-							</v-dialog>
-							<v-dialog v-model="dialogDelete" max-width="500px">
-								<v-card>
-									<v-card-title class="headline">Etes vous sûr de vouloir supprimer ce projet ?</v-card-title>
-									<v-card-actions>
-										<v-spacer></v-spacer>
-										<v-btn color="blue darken-1" text @click="closeDelete">Annuler</v-btn>
-										<v-btn color="blue darken-1" text @click="deleteItemConfirm">Valider</v-btn>
-										<v-spacer></v-spacer>
-									</v-card-actions>
-								</v-card>
-							</v-dialog>
-						</v-toolbar>
-					</template>
-					<template v-slot:item.actions="{ item }">
-						<v-icon
-							small
-							class="mr-2"
-							@click="editItem(item)"
-						>
-							mdi-pencil
-						</v-icon>
-						<v-icon
-							small
-							class="mr-2"
-							@click="deleteItem(item)"
-						>
-							mdi-delete
-						</v-icon>
-						<v-icon
-							small
-							:to="{name: 'Gallery', params: {id: item.id}}"
-						>
-							mdi-arrow-right-bold-circle
-						</v-icon>
-					</template>
-					<template v-slot:no-data>
-						<v-btn
-							color="primary"
-							@click="initialize"
-						>
-							Reset
-						</v-btn>
-					</template>
-				</v-data-table>
-				</v-col>
-			</v-row>
-		</v-container>
-	</div>
+      <v-row>
+        <v-col>
+          <v-data-table
+            :headers="headers"
+            :items="projets"
+            sort-by="calories"
+            class="elevation-1"
+          >
+            <template v-slot:top>
+              <v-toolbar flat>
+                <v-toolbar-title>Mes projets de voyage</v-toolbar-title>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-spacer></v-spacer>
+                <v-dialog v-model="dialog" max-width="500px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      color="primary"
+                      dark
+                      class="mb-2"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      Nouveau projet
+                    </v-btn>
+                  </template>
+                  <projet-form
+                    @save="save"
+                    @close="close"
+                    :projet="editedItem"
+                    :edit="editForm"
+                  />
+                </v-dialog>
+                <v-dialog v-model="dialogDelete" max-width="500px">
+                  <v-card>
+                    <v-card-title class="headline"
+                      >Etes vous sûr de vouloir supprimer ce projet
+                      ?</v-card-title
+                    >
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="closeDelete"
+                        >Annuler</v-btn
+                      >
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="deleteItemConfirm"
+                        >Valider</v-btn
+                      >
+                      <v-spacer></v-spacer>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-toolbar>
+            </template>
+            <template v-slot:item.actions="{ item }">
+              <v-icon small class="mr-2" @click="editItem(item)">
+                mdi-pencil
+              </v-icon>
+              <v-icon small class="mr-2" @click="deleteItem(item)">
+                mdi-delete
+              </v-icon>
+              <v-icon small :to="{ name: 'Gallery', params: { id: item.id } }">
+                mdi-arrow-right-bold-circle
+              </v-icon>
+            </template>
+            <template v-slot:no-data>
+              Aucune donnée
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-data-table
+            :headers="headers"
+            :items="sharedProjets"
+            sort-by="calories"
+            class="elevation-1"
+          >
+            <template v-slot:top>
+              <v-toolbar flat>
+                <v-toolbar-title>Mes voyages partagé</v-toolbar-title>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-spacer></v-spacer>
+              </v-toolbar>
+            </template>
+            <template v-slot:item.actions="{ item }">
+              <v-icon small :to="{ name: 'Gallery', params: { id: item.id } }">
+                mdi-arrow-right-bold-circle
+              </v-icon>
+            </template>
+            <template v-slot:no-data>
+              Aucune donnée
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
-import ProjetForm from '../components/projetForm.vue';
+import ProjetForm from "../components/projetForm.vue";
 
 export default {
   name: "Dashboard",
-	components: {ProjetForm},
+  components: { ProjetForm },
   data: () => {
-ProjetForm
     return {
-			dialog: false,
+      dialog: false,
       dialogDelete: false,
       headers: [
-        { text: 'Numéro', value: 'id' },
-				{ text: 'Nom', value: 'name' },
-        { text: 'Date début', value: 'dateDebut' },
-        { text: 'Date fin', value: 'dateFin' },
-        { text: 'Etat', value: 'etat' },
-				{ text: 'Token', value: 'token' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { text: "Numéro", value: "id" },
+        { text: "Nom", value: "name" },
+        { text: "Date début", value: "dateDebut" },
+        { text: "Date fin", value: "dateFin" },
+        { text: "Etat", value: "etat" },
+        { text: "Token", value: "token" },
+        { text: "Actions", value: "actions", sortable: false },
       ],
       projets: [],
+      sharedProjets: [],
       editedIndex: -1,
       editedItem: {
-        name: '',
-        dateDebut: '',
-        dateFin: '',
-        etat: '',
-        token: '',
+        name: "",
+        dateDebut: "",
+        dateFin: "",
+        etat: "",
+        token: "",
       },
-			editForm: false,
+      editForm: false,
       defaultItem: {
-        name: '',
-        dateDebut: '',
-        dateFin: '',
-        etat: '',
-        token: '',
+        name: "",
+        dateDebut: "",
+        dateFin: "",
+        etat: "",
+        token: "",
       },
-		};
+    };
   },
 
-	computed: {
-		formTitle () {
-			return this.editedIndex === -1 ? 'Nouveau projet' : 'Modifier un projet'
-		},
-	},
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1 ? "Nouveau projet" : "Modifier un projet";
+    },
+  },
 
-	watch: {
-		dialog (val) {
-			val || this.close()
-		},
-		dialogDelete (val) {
-			val || this.closeDelete()
-		},
-	},
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+  },
 
-	created () {
-		this.initialize()
-	},
+  created() {
+    this.initialize();
+  },
 
-	methods: {
-		initialize () {
-			this.projets = [
-				{
-					name: 'Voyage en italie',
-					dateDebut: '29/10/2020',
-					dateFin: '29/11/2020',
-					etat: 'PROTEGE',
-					token: 'sfkjklf34sdqo23',
-				},
-			]
-		},
+  methods: {
+    initialize() {
+      this.projets = [
+        {
+          name: "Voyage en italie",
+          dateDebut: "29/10/2020",
+          dateFin: "29/11/2020",
+          etat: "PROTEGE",
+          token: "sfkjklf34sdqo23",
+        },
+      ];
+    },
 
-		save (projet) {
-			if (this.editForm) {
-				Object.assign(this.projets[this.editedIndex], projet)
-				this.editForm = false;
-			} else {
-				this.projets.push(projet)
-			}
-			this.close()
-		},
+    save(projet) {
+      if (this.editForm) {
+        Object.assign(this.projets[this.editedIndex], projet);
+        this.editForm = false;
+      } else {
+        this.projets.push(projet);
+      }
+      this.close();
+    },
 
-		editItem (item) {
-			this.editedIndex = this.projets.indexOf(item)
-			this.editedItem = Object.assign({}, item)
-			this.dialog = true
-			this.editForm = true
-		},
+    editItem(item) {
+      this.editedIndex = this.projets.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+      this.editForm = true;
+    },
 
-		deleteItem (item) {
-			this.editedIndex = this.projets.indexOf(item)
-			this.editedItem = Object.assign({}, item)
-			this.dialogDelete = true
-		},
+    deleteItem(item) {
+      this.editedIndex = this.projets.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
 
-		deleteItemConfirm () {
-			this.projets.splice(this.editedIndex, 1)
-			this.closeDelete()
-		},
+    deleteItemConfirm() {
+      this.projets.splice(this.editedIndex, 1);
+      this.closeDelete();
+    },
 
-		close () {
-			this.dialog = false
-			this.$nextTick(() => {
-				this.editedItem = Object.assign({}, this.defaultItem)
-				this.editedIndex = -1
-			})
-		},
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
 
-		closeDelete () {
-			this.dialogDelete = false
-			this.$nextTick(() => {
-				this.editedItem = Object.assign({}, this.defaultItem)
-				this.editedIndex = -1
-			})
-		},
-	}
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+  },
 };
 </script>
 
