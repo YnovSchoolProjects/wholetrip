@@ -41,7 +41,8 @@ let checkLogin = async function() {
       return true;
     }
   }
-  return false
+  // TODO: Renvoyer false quand authentification en ligne et en place
+  return true
 }
 
 router.beforeEach(async function(to, from, next) {

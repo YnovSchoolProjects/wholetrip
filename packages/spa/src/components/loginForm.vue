@@ -15,7 +15,6 @@
           />
         </v-col>
       </v-row>
-
       <v-row>
         <v-col
           md="6 "
@@ -105,6 +104,8 @@ export default {
             this.$router.push({name: 'Dashboard'});
           } else {
             this.showPopup({color: 'red', text: "Une erreur est survenue."})
+            // TODO: Supprimer cette ligne quand api en ligne prête pour se connecter
+            this.$router.push({name: 'Dashboard'});
           }
         }
         catch (e) {

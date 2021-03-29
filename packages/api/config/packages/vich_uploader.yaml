@@ -1,0 +1,14 @@
+vich_uploader:
+    db_driver: orm
+    storage: flysystem
+    metadata:
+        auto_detection: true
+
+    mappings:
+        media:
+            uri_prefix:
+            upload_destination: uploads.storage
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_remove: true
+            delete_on_update: true
+            inject_on_load: true

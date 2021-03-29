@@ -1,0 +1,17 @@
+flysystem:
+  storages:
+    uploads.storage.s3:
+      adapter: "aws"
+      options:
+        client: Aws\S3\S3Client
+        bucket: "%env(S3_BUCKET)%"
+
+    uploads.storage.local:
+      adapter: "local"
+      options:
+        directory: "%kernel.project_dir%/var/storage/uploads"
+
+    uploads.storage:
+      adapter: "lazy"
+      options:
+        source: "%env(APP_UPLOADS_SOURCE)%"
